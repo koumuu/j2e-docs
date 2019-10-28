@@ -1,0 +1,250 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>configurator module &#8212; J2E  ドキュメント</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="dataset module" href="dataset.html" />
+    <link rel="prev" title="J2Eのドキュメントへようこそ！" href="../index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="dataset.html" title="dataset module"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="J2Eのドキュメントへようこそ！"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">J2E  ドキュメント</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-configurator">
+<span id="configurator-module"></span><h1>configurator module<a class="headerlink" href="#module-configurator" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>データセットの指定、モデルのパラメーターと実行環境を配置する。</p>
+<p><a class="reference internal" href="#configurator.Configurator" title="configurator.Configurator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Configurator</span></code></a>: CPUでモデルを実行する。</p>
+<p><a class="reference internal" href="#configurator.SingleGPUConfigurator" title="configurator.SingleGPUConfigurator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleGPUConfigurator</span></code></a>: GPUでモデルを実行する。</p>
+<p><a class="reference internal" href="#configurator.MultiGPUConfigurator" title="configurator.MultiGPUConfigurator"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiGPUConfigurator</span></code></a>: 複数のGPUでモデルを実行する。</p>
+<p>使用例：
+GPUが使用できない時、Configuratorを使う。
+その以外、もしGPUの個数が1以下であればSingleGPUConfigurator、
+GPUの個数が2以上であればMultiGPUConfiguratorを使う。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">configurator_class</span> <span class="o">=</span> <span class="n">Configurator</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="p">(</span>
+    <span class="n">SingleGPUConfigurator</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">MultiGPUConfigurator</span><span class="p">)</span>
+
+<span class="n">params_loader</span> <span class="o">=</span> <span class="n">ParamsLoader</span><span class="p">(</span><span class="s1">&#39;./params/training.transformer.params&#39;</span><span class="p">)</span>
+
+<span class="n">configurator</span> <span class="o">=</span> <span class="n">configurator_class</span><span class="p">(</span><span class="o">**</span><span class="n">params_loader</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>ここで、注意を払うべきなのは、configuratorの初期化である。</p>
+<p>上の例にあるように、直接パラメータを渡すことより、
+<a class="reference internal" href="params_loader.html#params_loader.ParamsLoader" title="params_loader.ParamsLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">params_loader.ParamsLoader</span></code></a> を用いる方法がオススメである。</p>
+<dl class="class">
+<dt id="configurator.Configurator">
+<em class="property">class </em><code class="sig-prename descclassname">configurator.</code><code class="sig-name descname">Configurator</code><span class="sig-paren">(</span><em class="sig-param">source_lang_file=''</em>, <em class="sig-param">target_lang_file=''</em>, <em class="sig-param">device=device(type='cpu')</em>, <em class="sig-param">model_name=''</em>, <em class="sig-param">max_length=30</em>, <em class="sig-param">hidden_size=256</em>, <em class="sig-param">batch_size=40</em>, <em class="sig-param">epochs=20</em>, <em class="sig-param">teacher_forcing_ratio=0.0</em>, <em class="sig-param">learning_rate=0.01</em>, <em class="sig-param">warmup_steps=1000</em>, <em class="sig-param">dropout_p=0.0</em>, <em class="sig-param">source_fasttext_model_file=None</em>, <em class="sig-param">target_fasttext_model_file=None</em><span class="sig-paren">)</span><a class="headerlink" href="#configurator.Configurator" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>CPUでモデルを実行する。</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_lang_file</strong> -- 日本語データセットのファイル位置。</p></li>
+<li><p><strong>target_lang_file</strong> -- 英語データセットのファイル位置。</p></li>
+<li><p><strong>device</strong> -- 自動設定されるパラメーター、手動での設定は禁止。</p></li>
+<li><p><strong>model_name</strong> -- 使用するモデル。(seq2seq/transformer)</p></li>
+<li><p><strong>max_length</strong> -- 一つの文の最大な文字数(その以上の文は読み込まない)。</p></li>
+<li><p><strong>hidden_size</strong> -- 文字ベクトルの次元数。</p></li>
+<li><p><strong>batch_size</strong> -- 同時に処理する文の個数。</p></li>
+<li><p><strong>epochs</strong> -- 訓練を何回を繰り返すのかを設定。</p></li>
+<li><p><strong>teacher_forcing_ratio</strong> -- 訓練する時、真の値と予測値の割合。(0.0 ~ 1.0)</p></li>
+<li><p><strong>learning_rate</strong> -- 訓練速率。(0.0 ~ 1.0)</p></li>
+<li><p><strong>warmup_steps</strong> -- warmupの歩数。</p></li>
+<li><p><strong>dropout_p</strong> -- ランダム捨ての割合。(0.0 ~ 1.0)</p></li>
+<li><p><strong>source_fasttext_model_file</strong> -- 日本語のfasttextのモデル。
+target_fasttext_model_fileと同時に設定された場合、
+embedding層はfasttextに切り替える。</p></li>
+<li><p><strong>target_fasttext_model_file</strong> -- 英語のfasttextのモデル。
+source_fasttext_model_fileと同時に設定された場合、
+embedding層はfasttextに切り替える。</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="configurator.Configurator.save_model">
+<code class="sig-name descname">save_model</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="headerlink" href="#configurator.Configurator.save_model" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>訓練中であるかどうかにかからわず、今のモデルを保存する。</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>path</strong> -- 保存されるファイル位置。</p>
+</dd>
+<dt class="field-even">戻り値</dt>
+<dd class="field-even"><p>なし。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="configurator.Configurator.starting_train_hook">
+<code class="sig-name descname">starting_train_hook</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#configurator.Configurator.starting_train_hook" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>訓練開始の直前に実行されるコード</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="configurator.MultiGPUConfigurator">
+<em class="property">class </em><code class="sig-prename descclassname">configurator.</code><code class="sig-name descname">MultiGPUConfigurator</code><span class="sig-paren">(</span><em class="sig-param">source_lang_file=''</em>, <em class="sig-param">target_lang_file=''</em>, <em class="sig-param">**args</em><span class="sig-paren">)</span><a class="headerlink" href="#configurator.MultiGPUConfigurator" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference internal" href="#configurator.SingleGPUConfigurator" title="configurator.SingleGPUConfigurator"><code class="xref py py-class docutils literal notranslate"><span class="pre">configurator.SingleGPUConfigurator</span></code></a></p>
+<p>複数のGPUでモデルを実行する。</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_lang_file</strong> -- 日本語データセットのファイル位置。</p></li>
+<li><p><strong>target_lang_file</strong> -- 英語データセットのファイル位置。</p></li>
+<li><p><strong>device</strong> -- 自動設定されるパラメーター、手動での設定は禁止。</p></li>
+<li><p><strong>model_name</strong> -- 使用するモデル。(seq2seq/transformer)</p></li>
+<li><p><strong>max_length</strong> -- 一つの文の最大な文字数(その以上の文は読み込まない)。</p></li>
+<li><p><strong>hidden_size</strong> -- 文字ベクトルの次元数。</p></li>
+<li><p><strong>batch_size</strong> -- 同時に処理する文の個数。</p></li>
+<li><p><strong>epochs</strong> -- 訓練を何回を繰り返すのかを設定。</p></li>
+<li><p><strong>teacher_forcing_ratio</strong> -- 訓練する時、真の値と予測値の割合。(0.0 ~ 1.0)</p></li>
+<li><p><strong>learning_rate</strong> -- 訓練速率。(0.0 ~ 1.0)</p></li>
+<li><p><strong>warmup_steps</strong> -- warmupの歩数。</p></li>
+<li><p><strong>dropout_p</strong> -- ランダム捨ての割合。(0.0 ~ 1.0)</p></li>
+<li><p><strong>source_fasttext_model_file</strong> -- 日本語のfasttextのモデル。
+target_fasttext_model_fileと同時に設定された場合、
+embedding層はfasttextに切り替える。</p></li>
+<li><p><strong>target_fasttext_model_file</strong> -- 英語のfasttextのモデル。
+source_fasttext_model_fileと同時に設定された場合、
+embedding層はfasttextに切り替える。</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="configurator.MultiGPUConfigurator.save_model">
+<code class="sig-name descname">save_model</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="headerlink" href="#configurator.MultiGPUConfigurator.save_model" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>訓練中であるかどうかにかからわず、今のモデルを保存する。</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><p><strong>path</strong> -- 保存されるファイル位置。</p>
+</dd>
+<dt class="field-even">戻り値</dt>
+<dd class="field-even"><p>なし。</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="configurator.MultiGPUConfigurator.starting_train_hook">
+<code class="sig-name descname">starting_train_hook</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#configurator.MultiGPUConfigurator.starting_train_hook" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>訓練開始の直前に実行されるコード</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="configurator.SingleGPUConfigurator">
+<em class="property">class </em><code class="sig-prename descclassname">configurator.</code><code class="sig-name descname">SingleGPUConfigurator</code><span class="sig-paren">(</span><em class="sig-param">source_lang_file=''</em>, <em class="sig-param">target_lang_file=''</em>, <em class="sig-param">device=device(type='cuda'</em>, <em class="sig-param">index=0)</em>, <em class="sig-param">**args</em><span class="sig-paren">)</span><a class="headerlink" href="#configurator.SingleGPUConfigurator" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <a class="reference internal" href="#configurator.Configurator" title="configurator.Configurator"><code class="xref py py-class docutils literal notranslate"><span class="pre">configurator.Configurator</span></code></a></p>
+<p>GPUでモデルを実行する。</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_lang_file</strong> -- 日本語データセットのファイル位置。</p></li>
+<li><p><strong>target_lang_file</strong> -- 英語データセットのファイル位置。</p></li>
+<li><p><strong>device</strong> -- 自動設定されるパラメーター、手動での設定は禁止。</p></li>
+<li><p><strong>model_name</strong> -- 使用するモデル。(seq2seq/transformer)</p></li>
+<li><p><strong>max_length</strong> -- 一つの文の最大な文字数(その以上の文は読み込まない)。</p></li>
+<li><p><strong>hidden_size</strong> -- 文字ベクトルの次元数。</p></li>
+<li><p><strong>batch_size</strong> -- 同時に処理する文の個数。</p></li>
+<li><p><strong>epochs</strong> -- 訓練を何回を繰り返すのかを設定。</p></li>
+<li><p><strong>teacher_forcing_ratio</strong> -- 訓練する時、真の値と予測値の割合。(0.0 ~ 1.0)</p></li>
+<li><p><strong>learning_rate</strong> -- 訓練速率。(0.0 ~ 1.0)</p></li>
+<li><p><strong>warmup_steps</strong> -- warmupの歩数。</p></li>
+<li><p><strong>dropout_p</strong> -- ランダム捨ての割合。(0.0 ~ 1.0)</p></li>
+<li><p><strong>source_fasttext_model_file</strong> -- 日本語のfasttextのモデル。
+target_fasttext_model_fileと同時に設定された場合、
+embedding層はfasttextに切り替える。</p></li>
+<li><p><strong>target_fasttext_model_file</strong> -- 英語のfasttextのモデル。
+source_fasttext_model_fileと同時に設定された場合、
+embedding層はfasttextに切り替える。</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>前のトピックへ</h4>
+  <p class="topless"><a href="../index.html"
+                        title="前の章へ">J2Eのドキュメントへようこそ！</a></p>
+  <h4>次のトピックへ</h4>
+  <p class="topless"><a href="dataset.html"
+                        title="次の章へ">dataset module</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="dataset.html" title="dataset module"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="J2Eのドキュメントへようこそ！"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">J2E  ドキュメント</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Kou Muu.
+      このドキュメントは <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0 で生成しました。
+    </div>
+  </body>
+</html>

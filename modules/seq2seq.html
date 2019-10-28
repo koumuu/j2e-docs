@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>seq2seq module &#8212; J2E  ドキュメント</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="transformer module" href="transformer.html" />
+    <link rel="prev" title="params_loader module" href="params_loader.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="transformer.html" title="transformer module"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="params_loader.html" title="params_loader module"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">J2E  ドキュメント</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-seq2seq">
+<span id="seq2seq-module"></span><h1>seq2seq module<a class="headerlink" href="#module-seq2seq" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<dl class="class">
+<dt id="seq2seq.Attention">
+<em class="property">class </em><code class="sig-prename descclassname">seq2seq.</code><code class="sig-name descname">Attention</code><span class="sig-paren">(</span><em class="sig-param">max_length</em>, <em class="sig-param">hidden_size</em><span class="sig-paren">)</span><a class="headerlink" href="#seq2seq.Attention" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<dl class="method">
+<dt id="seq2seq.Attention.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">embedded</em>, <em class="sig-param">hidden</em>, <em class="sig-param">encoder_outputs</em><span class="sig-paren">)</span><a class="headerlink" href="#seq2seq.Attention.forward" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="seq2seq.DecoderWithAttention">
+<em class="property">class </em><code class="sig-prename descclassname">seq2seq.</code><code class="sig-name descname">DecoderWithAttention</code><span class="sig-paren">(</span><em class="sig-param">embedding</em>, <em class="sig-param">hidden_size</em>, <em class="sig-param">max_length</em>, <em class="sig-param">bidirectional=True</em>, <em class="sig-param">num_layers=1</em>, <em class="sig-param">dropout_p=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#seq2seq.DecoderWithAttention" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<dl class="method">
+<dt id="seq2seq.DecoderWithAttention.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">sentences</em>, <em class="sig-param">hidden</em>, <em class="sig-param">encoder_outputs</em><span class="sig-paren">)</span><a class="headerlink" href="#seq2seq.DecoderWithAttention.forward" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="seq2seq.Encoder">
+<em class="property">class </em><code class="sig-prename descclassname">seq2seq.</code><code class="sig-name descname">Encoder</code><span class="sig-paren">(</span><em class="sig-param">embedding</em>, <em class="sig-param">hidden_size</em>, <em class="sig-param">bidirectional=False</em>, <em class="sig-param">num_layers=2</em>, <em class="sig-param">dropout_p=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#seq2seq.Encoder" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<dl class="method">
+<dt id="seq2seq.Encoder.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">sentences</em>, <em class="sig-param">hidden</em><span class="sig-paren">)</span><a class="headerlink" href="#seq2seq.Encoder.forward" title="この定義へのパーマリンク">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">パラメータ</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sentences</strong> -- of shape (seq_len, batch_size)</p></li>
+<li><p><strong>hidden</strong> -- last hidden of shape (num_layers * num_directions, batch_size, hidden_size)</p></li>
+</ul>
+</dd>
+<dt class="field-even">戻り値</dt>
+<dd class="field-even"><p>gru return value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="seq2seq.Seq2Seq">
+<em class="property">class </em><code class="sig-prename descclassname">seq2seq.</code><code class="sig-name descname">Seq2Seq</code><span class="sig-paren">(</span><em class="sig-param">source_embedding</em>, <em class="sig-param">target_embedding</em>, <em class="sig-param">max_length</em>, <em class="sig-param">hidden_size</em>, <em class="sig-param">teacher_forcing_ratio=0.0</em>, <em class="sig-param">dropout_p=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#seq2seq.Seq2Seq" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>ベースクラス: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<dl class="method">
+<dt id="seq2seq.Seq2Seq.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">source_seq</em>, <em class="sig-param">target_seq</em><span class="sig-paren">)</span><a class="headerlink" href="#seq2seq.Seq2Seq.forward" title="この定義へのパーマリンク">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>前のトピックへ</h4>
+  <p class="topless"><a href="params_loader.html"
+                        title="前の章へ">params_loader module</a></p>
+  <h4>次のトピックへ</h4>
+  <p class="topless"><a href="transformer.html"
+                        title="次の章へ">transformer module</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="transformer.html" title="transformer module"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="params_loader.html" title="params_loader module"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">J2E  ドキュメント</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Kou Muu.
+      このドキュメントは <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0 で生成しました。
+    </div>
+  </body>
+</html>
